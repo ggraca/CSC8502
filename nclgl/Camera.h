@@ -5,10 +5,10 @@ Author:Rich Davison	<richard.davison4@newcastle.ac.uk>
 Description:FPS-Style camera. Uses the mouse and keyboard from the Window
 class to get movement values!
 
--_-_-_-_-_-_-_,------,   
+-_-_-_-_-_-_-_,------,
 _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 -_-_-_-_-_-_-~|__( ^ .^) /
-_-_-_-_-_-_-_-""  ""   
+_-_-_-_-_-_-_-""  ""
 
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
