@@ -1,3 +1,4 @@
+#include "..\6) Scene Graph\Renderer.h"
 #include "Renderer.h"
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent) {

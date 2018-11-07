@@ -1,18 +1,18 @@
 /******************************************************************************
 Author:Rich Davison
-Description: Some random variables and functions, for lack of a better place 
+Description: Some random variables and functions, for lack of a better place
 to put them.
 
--_-_-_-_-_-_-_,------,   
+-_-_-_-_-_-_-_,------,
 _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 -_-_-_-_-_-_-~|__( ^ .^) /
-_-_-_-_-_-_-_-""  ""   
+_-_-_-_-_-_-_-""  ""
 
 *//////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-// #define WEEK_2_CODE
+#define WEEK_2_CODE
 // #define WEEK_3_CODE
 
 /*
@@ -35,7 +35,7 @@ time lighting tutorial, uncomment both MD5_USE_NORMALS and MD5_USE_TANGENTS_BUMP
 */
 
 //It's pi(ish)...
-static const float		PI = 3.14159265358979323846f;	
+static const float		PI = 3.14159265358979323846f;
 
 //It's pi...divided by 360.0f!
 static const float		PI_OVER_360 = PI / 360.0f;
