@@ -2,15 +2,15 @@
 /*
 Class:OGLRenderer
 Author:Rich Davison	<richard.davison4@newcastle.ac.uk>
-Description:Abstract base class for the graphics tutorials. Creates an OpenGL 
-3.2 CORE PROFILE rendering context. Each lesson will create a renderer that 
+Description:Abstract base class for the graphics tutorials. Creates an OpenGL
+3.2 CORE PROFILE rendering context. Each lesson will create a renderer that
 inherits from this class - so all context creation is handled automatically,
 but students still get to see HOW such a context is created.
 
--_-_-_-_-_-_-_,------,   
+-_-_-_-_-_-_-_,------,
 _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 -_-_-_-_-_-_-~|__( ^ .^) /
-_-_-_-_-_-_-_-""  ""   
+_-_-_-_-_-_-_-""  ""
 
 */
 #include "Common.h"
@@ -34,6 +34,7 @@ _-_-_-_-_-_-_-""  ""
 
 #include "Shader.h"		//Students make this file...
 #include "Mesh.h"		//And this one...
+#include "Light.h"		//And this one...
 
 using std::vector;
 
@@ -82,7 +83,7 @@ struct DebugDrawData {
 
 		colours.push_back(fromColour);
 		colours.push_back(toColour);
-	} 
+	}
 };
 
 
@@ -98,13 +99,13 @@ public:
 	virtual void	UpdateScene(float msec);
 	void			SwapBuffers();
 
-	bool			HasInitialised() const;	
-	
+	bool			HasInitialised() const;
+
 	static void		DrawDebugLine  (DebugDrawMode mode, const Vector3 &from,const Vector3 &to,const Vector3 &fromColour = Vector3(1,1,1),const Vector3 &toColour = Vector3(1,1,1));
 	static void		DrawDebugBox   (DebugDrawMode mode, const Vector3 &at,const Vector3 &scale,const Vector3 &colour = Vector3(1,1,1));
 	static void		DrawDebugCross (DebugDrawMode mode, const Vector3 &at,const Vector3 &scale,const Vector3 &colour = Vector3(1,1,1));
-	static void		DrawDebugCircle(DebugDrawMode mode, const Vector3 &at,const float radius,const Vector3 &colour = Vector3(1,1,1));	
-	
+	static void		DrawDebugCircle(DebugDrawMode mode, const Vector3 &at,const float radius,const Vector3 &colour = Vector3(1,1,1));
+
 	void			SetAsDebugDrawingRenderer() {
 		debugDrawingRenderer = this;
 	}
@@ -114,19 +115,19 @@ public:
 	}
 
 protected:
-	virtual void	Resize(int x, int y);	
+	virtual void	Resize(int x, int y);
 	void			UpdateShaderMatrices();
 	void			SetCurrentShader(Shader*s);
 
 	void			SetTextureRepeating(GLuint target, bool state);
 
-	//void			SetShaderLight(const Light &l);
+	void			SetShaderLight(const Light &l);
 
 	void			DrawDebugPerspective(Matrix4*matrix = 0);
 	void			DrawDebugOrtho(Matrix4*matrix = 0);
 
 	Shader* currentShader;
-	
+
 
 	Matrix4 projMatrix;		//Projection matrix
 	Matrix4 modelMatrix;	//Model matrix. NOT MODELVIEW

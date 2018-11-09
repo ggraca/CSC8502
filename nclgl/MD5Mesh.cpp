@@ -25,7 +25,7 @@ MD5Mesh::~MD5Mesh(void)	{
 //*/
 
 void MD5Mesh::Draw() {
-	GL_BREAKPOINT;
+	// GL_BREAKPOINT;
 	if(numVertices == 0) {
 		//Assume that this mesh is actually our 'root' node
 		//so set up the shader with our TBOs

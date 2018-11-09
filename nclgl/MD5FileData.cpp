@@ -609,7 +609,7 @@ void	MD5FileData::UpdateTransformTBO(const MD5Skeleton &skel) const {
 	glBufferSubData(GL_TEXTURE_BUFFER, 0, bindPose.numJoints*2*sizeof(Matrix4), (void*)&transforms[0]);
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
-	GL_BREAKPOINT;
+	// GL_BREAKPOINT;
 }
 #endif
 /*

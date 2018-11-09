@@ -4,11 +4,11 @@
 #include "Renderer.h"
 
 int main() {
-	Window w("Cube Mapping! sky textures courtesy of http://www.hazelwhorley.com", 800,600,false);
+	Window w("Cube Mapping! sky textures courtesy of http://www.hazelwhorley.com", 800,600,true);
 	if(!w.HasInitialised()) {
 		return -1;
 	}
-	
+
 	Renderer renderer(w);
 	if(!renderer.HasInitialised()) {
 		return -1;

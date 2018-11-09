@@ -1,15 +1,15 @@
 /*
 Class:OGLRenderer
 Author:Rich Davison	<richard.davison4@newcastle.ac.uk>
-Description:Abstract base class for the graphics tutorials. Creates an OpenGL 
-3.2 CORE PROFILE rendering context. Each lesson will create a renderer that 
+Description:Abstract base class for the graphics tutorials. Creates an OpenGL
+3.2 CORE PROFILE rendering context. Each lesson will create a renderer that
 inherits from this class - so all context creation is handled automatically,
 but students still get to see HOW such a context is created.
 
--_-_-_-_-_-_-_,------,   
+-_-_-_-_-_-_-_,------,
 _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 -_-_-_-_-_-_-~|__( ^ .^) /
-_-_-_-_-_-_-_-""  ""   
+_-_-_-_-_-_-_-""  ""
 
 */
 
@@ -38,17 +38,17 @@ OGLRenderer::OGLRenderer(Window &window)	{
 	HWND windowHandle = window.GetHandle();
 
 	// Did We Get A Device Context?
-	if (!(deviceContext=GetDC(windowHandle)))		{					
+	if (!(deviceContext=GetDC(windowHandle)))		{
 		std::cout << "OGLRenderer::OGLRenderer(): Failed to create window!" << std::endl;
 		return;
 	}
-	
+
 	//A pixel format descriptor is a struct that tells the Windows OS what type of front / back buffers we want to create etc
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
 
 	pfd.nSize			= sizeof(PIXELFORMATDESCRIPTOR);
-	pfd.nVersion		= 1; 
+	pfd.nVersion		= 1;
    	pfd.dwFlags			= PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;   //It must be double buffered, it must support OGL(!), and it must allow us to draw to it...
    	pfd.iPixelType		= PFD_TYPE_RGBA;	//We want our front / back buffer to have 4 channels!
    	pfd.cColorBits		= 32;				//4 channels of 8 bits each!
@@ -100,9 +100,9 @@ OGLRenderer::OGLRenderer(Window &window)	{
 
 	int attribs[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB, major,	//TODO: Maybe lock this to 3? We might actually get an OpenGL 4.x context...
-        WGL_CONTEXT_MINOR_VERSION_ARB, minor, 
-		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 
-#ifdef OPENGL_DEBUGGING 
+        WGL_CONTEXT_MINOR_VERSION_ARB, minor,
+		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+#ifdef OPENGL_DEBUGGING
 		| WGL_CONTEXT_DEBUG_BIT_ARB
 #endif		//No deprecated stuff!! DIE DIE DIE glBegin!!!!
 		,WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,		//We want everything OpenGL 3.2 provides...
@@ -115,7 +115,7 @@ OGLRenderer::OGLRenderer(Window &window)	{
 	renderContext = wglCreateContextAttribsARB(deviceContext,0, attribs);
 
 	// Check for the context, and try to make it the current rendering context
-	if(!renderContext || !wglMakeCurrent(deviceContext,renderContext))		{			
+	if(!renderContext || !wglMakeCurrent(deviceContext,renderContext))		{
 		std::cout << "OGLRenderer::OGLRenderer(): Cannot set OpenGL 3 context!" << std::endl;	//It's all gone wrong!
 		wglDeleteContext(renderContext);
 		wglDeleteContext(tempContext);
@@ -126,7 +126,7 @@ OGLRenderer::OGLRenderer(Window &window)	{
 
 	glewExperimental = GL_TRUE;	//This forces GLEW to give us function pointers for everything (gets around GLEW using 'old fashioned' methods
 								//for determining whether a OGL context supports a particular function or not
-	
+
 	if (glewInit() != GLEW_OK) {	//Try to initialise GLEW
 		std::cout << "OGLRenderer::OGLRenderer(): Cannot initialise GLEW!" << std::endl;	//It's all gone wrong!
 		return;
@@ -149,8 +149,8 @@ OGLRenderer::OGLRenderer(Window &window)	{
 		debugDrawShader		 = new Shader(SHADERDIR"/DebugVertex.glsl", SHADERDIR"DebugFragment.glsl");
 		orthoDebugData		 = new DebugDrawData();
 		perspectiveDebugData = new DebugDrawData();
-		debugDrawingRenderer = this;	
-		
+		debugDrawingRenderer = this;
+
 		if(!debugDrawShader->LinkProgram()) {
 			return;
 		}
@@ -182,7 +182,7 @@ Does lower bounds checking on input values, so should be reasonably safe
 to call.
 */
 void OGLRenderer::Resize(int x, int y)	{
-	width	= max(x,1);	
+	width	= max(x,1);
 	height	= max(y,1);
 	glViewport(0,0,width,height);
 }
@@ -204,7 +204,7 @@ void OGLRenderer::SwapBuffers() {
 		drawnDebugPerspective	= false;
 	}
 
-	//We call the windows OS SwapBuffers on win32. Wrapping it in this 
+	//We call the windows OS SwapBuffers on win32. Wrapping it in this
 	//function keeps all the tutorial code 100% cross-platform (kinda).
 	::SwapBuffers(deviceContext);
 }
@@ -251,11 +251,11 @@ void OGLRenderer::SetTextureRepeating( GLuint target, bool repeating )	{
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-//void OGLRenderer::SetShaderLight(const Light &l) {
-//	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos")   ,1,(float*)&l.GetPosition());
-//	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"),1,(float*)&l.GetColour());
-//	glUniform1f(glGetUniformLocation(currentShader->GetProgram() , "lightRadius"),l.GetRadius());
-//}
+void OGLRenderer::SetShaderLight(const Light &l) {
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos")   ,1,(float*)&l.GetPosition());
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"),1,(float*)&l.GetColour());
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram() , "lightRadius"),l.GetRadius());
+}
 
 #ifdef OPENGL_DEBUGGING
 void OGLRenderer::DebugCallback(GLuint source, GLuint type,GLuint id, GLuint severity,
@@ -305,7 +305,7 @@ void	OGLRenderer::DrawDebugPerspective(Matrix4*matrix)  {
 	}
 
 	perspectiveDebugData->Draw();
-	
+
 	perspectiveDebugData->Clear();
 	drawnDebugPerspective = true;
 	SetCurrentShader(currentShader);
@@ -390,7 +390,7 @@ void	OGLRenderer::DrawDebugCircle(DebugDrawMode mode, const Vector3 &at, const f
 
 DebugDrawData::DebugDrawData() {
 	glGenVertexArrays(1, &array);
-	glGenBuffers(2, buffers);	
+	glGenBuffers(2, buffers);
 }
 
 void DebugDrawData::Draw() {
@@ -402,12 +402,12 @@ void DebugDrawData::Draw() {
 
 	glBindBuffer(GL_ARRAY_BUFFER,buffers[VERTEX_BUFFER]);
 	glBufferData(GL_ARRAY_BUFFER,lines.size()*sizeof(Vector3), &lines[0], GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
+	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(VERTEX_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER,buffers[COLOUR_BUFFER]);
 	glBufferData(GL_ARRAY_BUFFER,colours.size()*sizeof(Vector3), &colours[0], GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
+	glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(COLOUR_BUFFER);
 
 	glDrawArrays(GL_LINES,0,lines.size());
