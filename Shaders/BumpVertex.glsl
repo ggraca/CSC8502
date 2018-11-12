@@ -26,7 +26,6 @@ void main(void) {
   OUT.colour = colour;
   OUT.texCoord = (textureMatrix * vec4(texCoord, 0.0, 1.0)).xy;
 
-
   OUT.normal = normalize(normalMatrix * normalize(normal));
   OUT.tangent = normalize(normalMatrix * normalize(tangent));
   OUT.binormal = normalize(normalMatrix * normalize(cross(normal, tangent)));

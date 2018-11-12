@@ -14,6 +14,7 @@ SceneNode::SceneNode(Mesh* m, Vector4 colour) {
 SceneNode::~SceneNode(void) {
   for(unsigned int i = 0; i < children.size(); ++i)
     delete children[i];
+  if (mesh) delete mesh;
 }
 
 void SceneNode::AddChild(SceneNode* child) {
