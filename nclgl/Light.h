@@ -5,6 +5,7 @@
 
 class Light {
 public:
+  Light(void) {}
   Light(Vector3 position, Vector4 colour, float radius) {
     this->position = position;
     this->colour = colour;
