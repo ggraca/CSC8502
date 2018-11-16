@@ -1,9 +1,10 @@
-#version 150
+#version 150 core
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 uniform mat4 textureMatrix;
+uniform mat4 shadowMatrix;
 
 in vec3 position;
 in vec4 colour;
@@ -18,6 +19,7 @@ out Vertex {
 	vec3 tangent;
   vec3 binormal;
 	vec3 worldPos;
+	vec4 shadowProj;
 } OUT;
 
 void main(void) {
@@ -30,6 +32,7 @@ void main(void) {
 	OUT.tangent = normalize(normalMatrix * normalize(tangent));
 	OUT.binormal = normalize(normalMatrix * normalize(cross(normal, tangent)));
 	OUT.worldPos = (modelMatrix * vec4(position, 1)).xyz;
+	OUT.shadowProj = (shadowMatrix * modelMatrix * vec4(position + (normal * 1.5), 1));
 
 	mat4 mvp = projMatrix * viewMatrix * modelMatrix;
 	gl_Position = mvp * vec4(position, 1.0);

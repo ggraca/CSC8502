@@ -6,6 +6,7 @@ SceneNode::SceneNode(Mesh* m, Vector4 colour) {
 
   this->mesh = m;
   this->colour = colour;
+  this->rotation = Vector3(1, 1, 1);
 
   boundingRadius = 1.0f;
   distanceFromCamera = 0.0f;

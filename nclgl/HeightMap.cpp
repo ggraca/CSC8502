@@ -20,7 +20,8 @@ HeightMap::HeightMap(string name) {
       int offset = (x * RAW_WIDTH) + z;
 
       vertices[offset] = Vector3(
-        x * HEIGHTMAP_X, data[offset] * HEIGHTMAP_Y, z * HEIGHTMAP_Z
+        // x * HEIGHTMAP_X, data[offset] * HEIGHTMAP_Y - 25, z * HEIGHTMAP_Z
+        x * HEIGHTMAP_X, 0, z * HEIGHTMAP_Z
       );
 
       textureCoords[offset] = Vector2(

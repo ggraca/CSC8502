@@ -13,7 +13,7 @@ public:
     void ToggleStencil();
 protected:
     Mesh* triangle;
-	Mesh* quad;
+	  Mesh* quad;
 
     bool usingScissor;
     bool usingStencil;

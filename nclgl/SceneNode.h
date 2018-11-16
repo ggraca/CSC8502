@@ -28,6 +28,9 @@ public:
 	Vector3 GetModelScale() const { return modelScale; }
 	void SetModelScale(Vector3 ms) { modelScale = ms; }
 
+	Vector3 GetRotation() const { return rotation; }
+	void SetRotation(Vector3 r) { rotation = r; }
+
 	// Visual
 	Mesh* GetMesh() const { return mesh; }
 	void SetMesh(Mesh* m) { mesh = m; }
@@ -52,6 +55,7 @@ protected:
 
 	Matrix4 transform, worldTransform;
 	Vector3 modelScale;
+	Vector3 rotation;
 
 	Mesh* mesh;
 	Vector4 colour;

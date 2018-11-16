@@ -61,3 +61,4 @@ static inline double DegToRad(const double rad)	{
 #define MYMESHDIR		"../../MyMeshes/"
 #define MYTEXTUREDIR  "../../MyTextures/"
 #define MYSOUNDSDIR	"../../MySounds/"
+#define MYSKYBOXES	"../../MySkyboxes/"

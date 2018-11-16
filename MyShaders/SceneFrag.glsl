@@ -1,12 +1,7 @@
-#version 150
+#version 150 core
 
 uniform sampler2D diffuseTex;
 uniform sampler2D bumpTex;
-
-uniform vec3 cameraPos;
-uniform vec4 lightColour;
-uniform vec3 lightPos;
-uniform float lightRadius;
 
 in Vertex {
 	vec4 colour;
@@ -15,9 +10,10 @@ in Vertex {
 	vec3 tangent;
 	vec3 binormal;
 	vec3 worldPos;
+	vec4 shadowProj;
 } IN;
 
-out vec4 fragColour;
+out vec4 fragColour[2];
 
 void main(void) {
 	// Utils
@@ -25,25 +21,7 @@ void main(void) {
 
 	// Get vectors
 	vec3 normal = normalize(TBN * (texture(bumpTex, IN.texCoord).rgb * 2 - 1));
-	vec3 incident = normalize(lightPos - IN.worldPos);
-	vec3 viewDir = normalize(cameraPos - IN.worldPos);
-	vec3 halfDir = normalize(incident + viewDir);
 
-	// Get scalars
-	float dist = length(lightPos - IN.worldPos);
-	float lambert = clamp(dot(incident, normal), 0.0, 1.0);
-	float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
-
-	// Light components params
-	float rFactor = max(0.5, dot(halfDir, normal));
-	float sFactor = pow(rFactor, 33.0);
-
-	// Colour operations
-	vec4 original_colour = texture(diffuseTex, IN.texCoord);
-	vec3 colour =
-		(original_colour.rgb * lightColour.rgb) +
-		(lightColour.rgb * sFactor * 0.33);
-
-	fragColour = vec4(colour * atten * lambert, original_colour.a);
-	fragColour.rgb += original_colour.rgb * lightColour.rgb * 0.1;
+	fragColour[0] = texture2D(diffuseTex, IN.texCoord);
+	fragColour[1] = vec4(normal.xyz * 0.5 + 0.5, 1.0);
 }
