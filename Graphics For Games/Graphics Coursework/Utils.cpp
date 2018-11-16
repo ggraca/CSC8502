@@ -29,3 +29,9 @@ void Renderer::DefinePerspectives() {
   );
   orthPerspective = Matrix4::Orthographic(-1, 1, 1, -1, -1, 1);
 }
+
+void Renderer::KeyboardShortcuts() {
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) {
+    camera->SetPosition(lights[0]->GetPosition());
+  }
+}

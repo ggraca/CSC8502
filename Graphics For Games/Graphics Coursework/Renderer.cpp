@@ -8,8 +8,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent) {
   if (!InstantiateObjects()) return;
   if (!InstantiateLights()) return;
 
-  SetupShadowFBO();
-  if (!SetupDeferredRenderingFBO()) return;
+  if (!SetupFBOs()) return;
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
@@ -61,7 +60,7 @@ void Renderer::RenderScene() {
   SortNodeLists();
 
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
+  
   // Pre Processing
   glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
   DrawShadowScene();
@@ -71,13 +70,13 @@ void Renderer::RenderScene() {
   DrawObjects();
   glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
   DrawLights();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, combinedFBO);
   DrawSkybox();
   CombineBuffers();
 
   // Post Processing
-  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  // DrawBloom();
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  DrawBloom();
 
   SwapBuffers();
   KeyboardShortcuts();

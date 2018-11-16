@@ -42,8 +42,11 @@ protected:
   bool InstantiateObjects();
   bool InstantiateLights();
 
-  void SetupShadowFBO();
-  bool SetupDeferredRenderingFBO();
+  bool SetupFBOs();
+  bool SetupShadowFBO();
+  bool SetupObjectFBO();
+  bool SetupLightFBO();
+  bool SetupCombinedFBO();
 
   void DrawObjects();
   void DrawLights();
@@ -59,6 +62,7 @@ protected:
   void DefinePerspectives();
   void DrawSkybox();
   void DrawBloom();
+  void DrawBlur();
 
   vector<Light*> lights;
   OBJMesh* sphere;
