@@ -2,16 +2,27 @@
 
 void Renderer::DrawShadowScene() {
   SetCurrentShader(shadowShader);
-  glClear(GL_DEPTH_BUFFER_BIT);
-
   glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
   glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
+  //glCullFace(GL_FRONT);
   projMatrix = lightPerspective;
-  viewMatrix = Matrix4::BuildViewMatrix(lights[0]->GetPosition(), Vector3(0, 0, 0));
-  shadowMatrix = biasMatrix * (lightPerspective * viewMatrix);
-  UpdateShaderMatrices();
-  DrawNodes();
+  int i = 0;
+  for(auto l : lights) {
+    glFramebufferTexture2D(
+      GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex[i], 0
+    );
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    viewMatrix = Matrix4::BuildViewMatrix(l->GetPosition(), Vector3(0, 10, 0));
+    shadowMatrix[i] = biasMatrix * (lightPerspective * viewMatrix);
+    UpdateShaderMatrices();
+
+    DrawNodes(false);
+
+    i++;
+  }
+  //glCullFace(GL_BACK);
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   glViewport(0, 0, width, height);
@@ -51,15 +62,23 @@ void Renderer::DrawLights() {
 
   glBlendFunc(GL_ONE, GL_ONE);
 
+  int arr[5] = {10, 11, 12, 13, 14};
   glUniform1i(
     glGetUniformLocation(currentShader->GetProgram(), "depthTex"), 2
   );
   glUniform1i(
     glGetUniformLocation(currentShader->GetProgram(), "normTex"), 3
   );
-  glUniform1i(
-    glGetUniformLocation(currentShader->GetProgram(), "shadowTex"), 4
+
+  glUniform1iv(
+    glGetUniformLocation(currentShader->GetProgram(), "shadowTex"),
+    MAX_SHADOWS, (int*)&arr
   );
+  glUniformMatrix4fv(
+    glGetUniformLocation(currentShader->GetProgram(), "shadowMatrix"),
+    MAX_SHADOWS, false, (float*)&shadowMatrix
+  );
+
   glUniform3fv(
     glGetUniformLocation(currentShader->GetProgram(), "cameraPos"), 1,
     (float*)&camera->GetPosition()
@@ -75,8 +94,12 @@ void Renderer::DrawLights() {
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_2D, objectNormalTex);
 
-  glActiveTexture(GL_TEXTURE4);
-  glBindTexture(GL_TEXTURE_2D, shadowTex);
+  for(int i = 0; i < MAX_SHADOWS; i++) {
+    glActiveTexture(GL_TEXTURE0 + arr[i]);
+    glBindTexture(GL_TEXTURE_2D, shadowTex[i]);
+  }
+
+
 
   for(auto l : lights) {
     SetShaderLight(*l);

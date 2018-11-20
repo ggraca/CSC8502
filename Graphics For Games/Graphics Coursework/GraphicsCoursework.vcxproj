@@ -70,17 +70,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FBOSetup.cpp" />
-    <ClCompile Include="Instantiates.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="PreProcessing.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SceneA.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
+    <ClCompile Include="ShaderSetup.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="SceneGraph.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

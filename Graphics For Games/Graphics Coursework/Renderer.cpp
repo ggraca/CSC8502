@@ -1,14 +1,14 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent) {
-  camera = new Camera(-20, 270, Vector3(-80, 20, 0));
+  quad = Mesh::GenerateQuad();
+  root = new SceneNode();
+
+  if (!SetupShaders()) return;
+  if (!SetupFBOs()) return;
+  if (!BuildSceneA()) return;
 
   DefinePerspectives();
-  if (!InstantiateShaders()) return;
-  if (!InstantiateObjects()) return;
-  if (!InstantiateLights()) return;
-
-  if (!SetupFBOs()) return;
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
@@ -36,7 +36,8 @@ Renderer::~Renderer(void) {
   delete skyboxShader;
   currentShader = NULL;
 
-  glDeleteTextures(1, &shadowTex);
+  for(int i = 0; i < MAX_SHADOWS; i++)
+    glDeleteTextures(1, &shadowTex[i]);
   glDeleteTextures(1, &objectColourTex);
   glDeleteTextures(1, &objectNormalTex);
   glDeleteTextures(1, &objectDepthTex);
@@ -60,7 +61,7 @@ void Renderer::RenderScene() {
   SortNodeLists();
 
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-  
+
   // Pre Processing
   glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
   DrawShadowScene();
@@ -75,9 +76,17 @@ void Renderer::RenderScene() {
   CombineBuffers();
 
   // Post Processing
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  DrawBloom();
+  projMatrix = orthPerspective;
+  viewMatrix.ToIdentity();
+  UpdateShaderMatrices();
 
+  glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+  DrawBloom(combinedColourTex);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  PresentScene(bloomColourTex);
+
+
+  glUseProgram(0);
   SwapBuffers();
   KeyboardShortcuts();
 }

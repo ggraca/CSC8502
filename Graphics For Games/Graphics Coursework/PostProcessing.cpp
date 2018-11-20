@@ -1,48 +1,62 @@
 #include "Renderer.h"
 
-void Renderer::DrawBlur() {
-  glDisable(GL_CULL_FACE);
-  glDisable(GL_DEPTH_TEST);
-  SetCurrentShader(bloomShader);
+void Renderer::DrawBlur(GLuint colourTex) {
+  SetCurrentShader(blurShader);
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-  glUniform2f(
-    glGetUniformLocation(currentShader->GetProgram(), "pixelSize"),
-    1.0f / width, 1.0f / height
-  );
-  glUniform1i(
-    glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 9
+  glUniform2f(glGetUniformLocation(
+    currentShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height
   );
 
-  glActiveTexture(GL_TEXTURE9);
-  glBindTexture(GL_TEXTURE_2D, combinedColourTex);
+  bool isVertical = false;
+  quad->SetTexture(colourTex);
+  for(int i = 0; i < POST_PASSES; i++) {
+    glFramebufferTexture2D(
+      GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+      blurColourTex[!isVertical], 0
+    );
+    glUniform1i(glGetUniformLocation(
+      currentShader->GetProgram(), "isVertical"), isVertical
+    );
+    quad->Draw();
 
-  projMatrix = orthPerspective;
-  viewMatrix.ToIdentity();
-  UpdateShaderMatrices();
-
-  quad->Draw();
-  glUseProgram(0);
-  glEnable(GL_CULL_FACE);
+    quad->SetTexture(blurColourTex[!isVertical]);
+    isVertical = !isVertical;
+  }
 }
 
-void Renderer::DrawBloom() {
-  glDisable(GL_CULL_FACE);
-  SetCurrentShader(bloomShader);
+void Renderer::DrawBloom(GLuint colourTex) {
+  // Filter
+  SetCurrentShader(bloomFilterShader);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+  quad->SetTexture(colourTex);
+  quad->Draw();
+
+  // Blur
+  glBindFramebuffer(GL_FRAMEBUFFER, blurFBO);
+  DrawBlur(bloomColourTex);
+
+  // Combine
+  glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+  SetCurrentShader(bloomCombineShader);
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
   glUniform1i(
-    glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 9
+    glGetUniformLocation(currentShader->GetProgram(), "bloomTex"), 9
   );
 
   glActiveTexture(GL_TEXTURE9);
-  glBindTexture(GL_TEXTURE_2D, combinedColourTex);
+  glBindTexture(GL_TEXTURE_2D, blurColourTex[0]);
 
-  projMatrix = orthPerspective;
-  viewMatrix.ToIdentity();
-  UpdateShaderMatrices();
-
+  quad->SetTexture(colourTex);
   quad->Draw();
-  glUseProgram(0);
-  glEnable(GL_CULL_FACE);
+}
+
+void Renderer::PresentScene(GLuint colourTex) {
+  SetCurrentShader(basicShader);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+  quad->SetTexture(colourTex);
+  quad->Draw();
 }

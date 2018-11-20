@@ -13,6 +13,8 @@
 
 #define LIGHTNUM 2
 #define SHADOWSIZE 2048
+#define POST_PASSES 50
+#define MAX_SHADOWS 5
 
 class Renderer : public OGLRenderer {
 public:
@@ -24,12 +26,13 @@ public:
 
 protected:
   Camera* camera;
+  int selectedCamera = 0;
 
   // SceneGraph
   void BuildNodeLists(SceneNode* from);
   void SortNodeLists();
   void ClearNodeLists();
-  void DrawNodes();
+  void DrawNodes(bool transparents = true);
   void DrawNode(SceneNode* node);
 
   SceneNode* root;
@@ -38,15 +41,18 @@ protected:
   vector<SceneNode*> nodeList;
 
   // Setup
-  bool InstantiateShaders();
-  bool InstantiateObjects();
-  bool InstantiateLights();
-
+  bool SetupShaders();
   bool SetupFBOs();
   bool SetupShadowFBO();
   bool SetupObjectFBO();
   bool SetupLightFBO();
   bool SetupCombinedFBO();
+  bool SetupBlurFBO();
+  bool SetupBloomFBO();
+
+  bool BuildSceneA();
+  // bool BuildSceneB();
+  // bool BuildSceneC();
 
   void DrawObjects();
   void DrawLights();
@@ -59,24 +65,30 @@ protected:
 
   // Utils
   void GenerateScreenTexture(GLuint &into, bool depth = false);
+  void GenerateShadowTexture(GLuint &into);
   void DefinePerspectives();
   void DrawSkybox();
-  void DrawBloom();
-  void DrawBlur();
+  void DrawBlur(GLuint colourTex);
+  void DrawBloom(GLuint colourTex);
+  void PresentScene(GLuint colourTex);
 
   vector<Light*> lights;
   OBJMesh* sphere;
   Mesh* quad;
 
+  Shader* basicShader;
   Shader* sceneShader;
   Shader* shadowShader;
   Shader* combineShader;
   Shader* lightShader;
   Shader* skyboxShader;
-  Shader* bloomShader;
+  Shader* blurShader;
+  Shader* bloomFilterShader;
+  Shader* bloomCombineShader;
 
   GLuint shadowFBO;
-  GLuint shadowTex;
+  GLuint shadowTex[5];
+  Matrix4 shadowMatrix[5];
 
   GLuint objectFBO;
   GLuint objectColourTex;
@@ -89,6 +101,12 @@ protected:
 
   GLuint combinedFBO;
   GLuint combinedColourTex;
+
+  GLuint blurFBO;
+  GLuint blurColourTex[2];
+
+  GLuint bloomFBO;
+  GLuint bloomColourTex;
 
   Matrix4 cameraPerspective;
   Matrix4 lightPerspective;

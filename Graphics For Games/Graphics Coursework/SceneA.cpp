@@ -1,48 +1,7 @@
 #include "Renderer.h"
 
-bool Renderer::InstantiateShaders() {
-  shadowShader = new Shader(
-    MYSHADERDIR"ShadowVert.glsl",
-    MYSHADERDIR"ShadowFrag.glsl"
-  );
-  if (!shadowShader->LinkProgram()) return false;
-
-  sceneShader = new Shader(
-    MYSHADERDIR"SceneVert.glsl",
-    MYSHADERDIR"SceneFrag.glsl"
-  );
-  if (!sceneShader->LinkProgram()) return false;
-
-  lightShader = new Shader(
-    MYSHADERDIR"LightVert.glsl",
-    MYSHADERDIR"LightFrag.glsl"
-  );
-  if (!lightShader->LinkProgram()) return false;
-
-  skyboxShader = new Shader(
-    MYSHADERDIR"SkyboxVert.glsl",
-    MYSHADERDIR"SkyboxFrag.glsl"
-  );
-  if (!skyboxShader->LinkProgram()) return false;
-
-  combineShader = new Shader(
-    MYSHADERDIR"CombinedVert.glsl",
-    MYSHADERDIR"CombinedFrag.glsl"
-  );
-  if (!combineShader->LinkProgram()) return false;
-
-  bloomShader = new Shader(
-    MYSHADERDIR"BloomVert.glsl",
-    MYSHADERDIR"BloomFrag.glsl"
-  );
-  if (!bloomShader->LinkProgram()) return false;
-
-  return true;
-}
-
-bool Renderer::InstantiateObjects() {
-  quad = Mesh::GenerateQuad();
-  root = new SceneNode();
+bool Renderer::BuildSceneA() {
+  camera = new Camera(-20, 270, Vector3(-80, 20, 0));
   SceneNode* s;
 
   // Skybox
@@ -87,7 +46,8 @@ bool Renderer::InstantiateObjects() {
 
   hellNode->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
 
-  hellNode->SetModelScale(Vector3(0.05, 0.05, 0.05));
+  hellNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
+  hellNode->SetTransform(Matrix4::Translation(Vector3(10, 0, 0)));
   hellNode->SetBoundingRadius(10000.0f);
   root->AddChild(hellNode);
 
@@ -101,22 +61,50 @@ bool Renderer::InstantiateObjects() {
 
   for(int x = -1; x <= 1; x += 2) {
     for(int z = -1; z <= 1; z += 2) {
+      int height = 250;
+      SceneNode* col = new SceneNode();
+      col->SetTransform(Matrix4::Translation(Vector3(x * 20, height - 10, z * 20)));
+      root->AddChild(col);
+
       s = new SceneNode();
-      int height = 200;
-      s->SetTransform(Matrix4::Translation(Vector3(x * 20, height - 10, z * 20)));
-      s->SetModelScale(Vector3(1, height, 1));
-      s->SetRotation(Vector3(1, 90, 1));
-      s->SetBoundingRadius(10000.0f);
-      s->SetColour(Vector4(1, 1, 1, 1));
+      s->SetColour(Vector4(1, 1, 1, 0));
       s->SetMesh(m);
-      root->AddChild(s);
+      s->SetTransform(Matrix4::Translation(Vector3(0, 0, -1)));
+      s->SetRotation(Vector3(1, 0, 1));
+      s->SetModelScale(Vector3(1, height, 1));
+      s->SetBoundingRadius(10000.0f);
+      col->AddChild(s);
+
+      s = new SceneNode();
+      s->SetColour(Vector4(1, 1, 1, 0));
+      s->SetMesh(m);
+      s->SetTransform(Matrix4::Translation(Vector3(-1, 0, 0)));
+      s->SetRotation(Vector3(1, 90, 1));
+      s->SetModelScale(Vector3(1, height, 1));
+      s->SetBoundingRadius(10000.0f);
+      col->AddChild(s);
+
+      s = new SceneNode();
+      s->SetColour(Vector4(1, 1, 1, 0));
+      s->SetMesh(m);
+      s->SetTransform(Matrix4::Translation(Vector3(0, 0, 1)));
+      s->SetRotation(Vector3(1, 180, 1));
+      s->SetModelScale(Vector3(1, height, 1));
+      s->SetBoundingRadius(10000.0f);
+      col->AddChild(s);
+
+      s = new SceneNode();
+      s->SetColour(Vector4(1, 1, 1, 0));
+      s->SetMesh(m);
+      s->SetTransform(Matrix4::Translation(Vector3(1, 0, 0)));
+      s->SetRotation(Vector3(1, 270, 1));
+      s->SetModelScale(Vector3(1, height, 1));
+      s->SetBoundingRadius(10000.0f);
+      col->AddChild(s);
+
     }
   }
 
-  return true;
-}
-
-bool Renderer::InstantiateLights() {
   Light* l;
 
   sphere = new OBJMesh();
@@ -124,10 +112,21 @@ bool Renderer::InstantiateLights() {
 
   // Moon
   l = new Light();
-  l->SetPosition(Vector3(200, 200, 175));
+  l->SetPosition(Vector3(200, 150, 175));
   l->SetColour(Vector4(0.4, 0.6, 1, 1.0f));
-  l->SetRadius(2500);
+  l->SetRadius(500);
   lights.push_back(l);
+
+  // Beams
+  for(int x = -1; x <= 1; x += 2) {
+    for(int z = -1; z <= 1; z += 2) {
+      l = new Light();
+      l->SetPosition(Vector3(x * 20, 30, z * 20));
+      l->SetColour(Vector4(0.6f, 0.6f, 0.6f, 1.0f));
+      l->SetRadius(50);
+      lights.push_back(l);
+    }
+  }
 
   return true;
 }

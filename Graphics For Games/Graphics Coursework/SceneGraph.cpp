@@ -33,11 +33,13 @@ void Renderer::SortNodeLists() {
   );
 }
 
-void Renderer::DrawNodes() {
+void Renderer::DrawNodes(bool transparents) {
   for(auto n : nodeList) DrawNode(n);
-  for(auto i = transparentNodeList.rbegin();
-      i != transparentNodeList.rend(); ++ i ) {
-    DrawNode(*i);
+  if(transparents) {
+    for(auto i = transparentNodeList.rbegin();
+        i != transparentNodeList.rend(); ++ i ) {
+      DrawNode(*i);
+    }
   }
 }
 

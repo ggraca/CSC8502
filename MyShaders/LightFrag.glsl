@@ -1,10 +1,10 @@
 #version 150 core
 
-uniform mat4 shadowMatrix;
+uniform mat4 shadowMatrix[5];
 
 uniform sampler2D depthTex;
 uniform sampler2D normTex;
-uniform sampler2DShadow shadowTex;
+uniform sampler2DShadow shadowTex[5];
 
 uniform vec2 pixelSize;
 uniform vec3 cameraPos;
@@ -37,16 +37,23 @@ void main(void) {
   vec3 viewDir = normalize(cameraPos - pos);
   vec3 halfDir = normalize(incident + viewDir);
   vec3 normal = normalize(texture(normTex, screen_pos.xy).xyz * 2.0 - 1.0);
-  vec4 shadowProj = shadowMatrix * vec4(pos + (normal * 1.5), 1);
 
   // Get scalars
   float dist = length(lightPos - pos);
   float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
   if (atten == 0.0) discard;
-
   float lambert = clamp(dot(incident, normal), 0.0, 1.0);
-  if (shadowProj.w > 0.0)
-    lambert *= textureProj(shadowTex, shadowProj);
+
+  float intensity = 0.0;
+  bool any = false;
+  for(int i = 0; i < 5; i++) {
+    vec4 shadowProj = shadowMatrix[i] * vec4(pos + (normal * 1.5), 1);
+    if (shadowProj.w > 0.0) {
+      intensity += textureProj(shadowTex[i], shadowProj) / 5;
+      any = true;
+    }
+  }
+  if (any) lambert *= intensity;
 
   // Light components params
   float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);

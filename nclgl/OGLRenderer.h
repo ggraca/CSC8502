@@ -133,7 +133,6 @@ protected:
 	Matrix4 modelMatrix;	//Model matrix. NOT MODELVIEW
 	Matrix4 viewMatrix;		//View matrix
 	Matrix4 textureMatrix;	//Texture matrix
-  Matrix4 shadowMatrix;
 
 	int		width;			//Render area width (not quite the same as window width)
 	int		height;			//Render area height (not quite the same as window height)
