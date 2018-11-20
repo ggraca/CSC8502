@@ -1,6 +1,6 @@
 #include "HeightMap.h"
 
-HeightMap::HeightMap(string name) {
+HeightMap::HeightMap(string name, bool flat) {
   ifstream file(name.c_str(), ios::binary);
 
   if(!file) return;
@@ -20,8 +20,7 @@ HeightMap::HeightMap(string name) {
       int offset = (x * RAW_WIDTH) + z;
 
       vertices[offset] = Vector3(
-        // x * HEIGHTMAP_X, data[offset] * HEIGHTMAP_Y - 25, z * HEIGHTMAP_Z
-        x * HEIGHTMAP_X, 0, z * HEIGHTMAP_Z
+        x * HEIGHTMAP_X, flat ? 0 : data[offset] * HEIGHTMAP_Y - 25, z * HEIGHTMAP_Z
       );
 
       textureCoords[offset] = Vector2(

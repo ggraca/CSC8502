@@ -128,7 +128,7 @@ protected:
 
 	Shader* currentShader;
 
-
+	float deltaTime = 0.0f;
 	Matrix4 projMatrix;		//Projection matrix
 	Matrix4 modelMatrix;	//Model matrix. NOT MODELVIEW
 	Matrix4 viewMatrix;		//View matrix

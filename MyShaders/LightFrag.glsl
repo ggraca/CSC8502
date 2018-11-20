@@ -13,11 +13,37 @@ uniform float lightRadius;
 uniform vec3 lightPos;
 uniform vec4 lightColour;
 
+uniform int softShadows;
+uniform int totalShadows;
+
 in Vertex {
   mat4 inverseProjView;
 } IN;
 
 out vec4 fragColour[2];
+
+float addShadows(float lambert, vec3 pos, vec3 normal) {
+  if (softShadows == 1) {
+    float intensity = 0.0;
+    bool any = false;
+    for(int i = 0; i < totalShadows; i++) {
+      vec4 shadowProj = shadowMatrix[i] * vec4(pos + (normal * 1.5), 1);
+      if (shadowProj.w > 0.0) {
+        intensity += textureProj(shadowTex[i], shadowProj) / totalShadows;
+        any = true;
+      }
+    }
+    if (any) lambert *= intensity;
+  }
+  else {
+    for(int i = 0; i < totalShadows; i++) {
+      vec4 shadowProj = shadowMatrix[i] * vec4(pos + (normal * 1.5), 1);
+      if (shadowProj.w > 0.0) lambert *= textureProj(shadowTex[i], shadowProj);
+    }
+  }
+  return lambert;
+}
+
 
 void main(void) {
   // Find screen position
@@ -43,17 +69,7 @@ void main(void) {
   float atten = 1.0 - clamp(dist / lightRadius, 0.0, 1.0);
   if (atten == 0.0) discard;
   float lambert = clamp(dot(incident, normal), 0.0, 1.0);
-
-  float intensity = 0.0;
-  bool any = false;
-  for(int i = 0; i < 5; i++) {
-    vec4 shadowProj = shadowMatrix[i] * vec4(pos + (normal * 1.5), 1);
-    if (shadowProj.w > 0.0) {
-      intensity += textureProj(shadowTex[i], shadowProj) / 5;
-      any = true;
-    }
-  }
-  if (any) lambert *= intensity;
+  lambert = addShadows(lambert, pos, normal);
 
   // Light components params
   float rFactor = clamp(dot(halfDir, normal), 0.0, 1.0);

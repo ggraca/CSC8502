@@ -5,24 +5,22 @@ void Renderer::DrawShadowScene() {
   glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
   glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-  //glCullFace(GL_FRONT);
-  projMatrix = lightPerspective;
   int i = 0;
-  for(auto l : lights) {
+  for(int al : activeLights) {
     glFramebufferTexture2D(
       GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex[i], 0
     );
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    viewMatrix = Matrix4::BuildViewMatrix(l->GetPosition(), Vector3(0, 10, 0));
-    shadowMatrix[i] = biasMatrix * (lightPerspective * viewMatrix);
+    projMatrix = (i == 0) ? sunPerspective : lightPerspective;
+    viewMatrix = Matrix4::BuildViewMatrix(lights[al]->GetPosition(), Vector3(0, 50, 0));
+    shadowMatrix[i] = biasMatrix * (projMatrix * viewMatrix);
     UpdateShaderMatrices();
 
     DrawNodes(false);
 
     i++;
   }
-  //glCullFace(GL_BACK);
 
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   glViewport(0, 0, width, height);
@@ -78,6 +76,14 @@ void Renderer::DrawLights() {
     glGetUniformLocation(currentShader->GetProgram(), "shadowMatrix"),
     MAX_SHADOWS, false, (float*)&shadowMatrix
   );
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "softShadows"),
+    softShadows
+  );
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "totalShadows"),
+    activeLights.size()
+  );
 
   glUniform3fv(
     glGetUniformLocation(currentShader->GetProgram(), "cameraPos"), 1,
@@ -99,9 +105,8 @@ void Renderer::DrawLights() {
     glBindTexture(GL_TEXTURE_2D, shadowTex[i]);
   }
 
-
-
-  for(auto l : lights) {
+  for(int i : activeLights) {
+    Light* l = lights[i];
     SetShaderLight(*l);
 
     float radius = l->GetRadius();
@@ -128,6 +133,13 @@ void Renderer::DrawSkybox() {
 
   glDisable(GL_CULL_FACE);
   glDepthMask(GL_FALSE);
+
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "cubeTex"), 4
+  );
+
+  glActiveTexture(GL_TEXTURE4);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkybox);
 
   projMatrix = cameraPerspective;
   UpdateShaderMatrices();

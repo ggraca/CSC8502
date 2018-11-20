@@ -51,8 +51,8 @@ protected:
   bool SetupBloomFBO();
 
   bool BuildSceneA();
-  // bool BuildSceneB();
-  // bool BuildSceneC();
+  void SelectSceneA();
+  void SelectSceneB();
 
   void DrawObjects();
   void DrawLights();
@@ -73,6 +73,7 @@ protected:
   void PresentScene(GLuint colourTex);
 
   vector<Light*> lights;
+  vector<int> activeLights;
   OBJMesh* sphere;
   Mesh* quad;
 
@@ -109,8 +110,14 @@ protected:
   GLuint bloomColourTex;
 
   Matrix4 cameraPerspective;
-  Matrix4 lightPerspective;
   Matrix4 orthPerspective;
+  Matrix4 lightPerspective;
+  Matrix4 sunPerspective;
 
-  GLuint skybox;
+  GLuint currentSkybox;
+  GLuint skybox[2];
+
+  bool softShadows;
+  bool bloom;
+  bool rotateLight;
 };

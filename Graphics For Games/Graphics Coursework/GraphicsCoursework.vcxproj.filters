@@ -42,7 +42,7 @@
     <ClCompile Include="ShaderSetup.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="SceneA.cpp">
+    <ClCompile Include="Scenes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

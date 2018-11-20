@@ -231,6 +231,7 @@ call.
 */
 void OGLRenderer::UpdateShaderMatrices()	{
 	if(currentShader) {
+		glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "deltaTime"),	deltaTime);
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"),	1,false, (float*)&modelMatrix);
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "viewMatrix") ,	1,false, (float*)&viewMatrix);
 		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram(), "projMatrix") ,	1,false, (float*)&projMatrix);

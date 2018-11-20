@@ -50,9 +50,15 @@ Renderer::~Renderer(void) {
 }
 
 void Renderer::UpdateScene(float msec) {
+  deltaTime += msec;
   camera->UpdateCamera(msec);
   frameFrustum.FromMatrix(cameraPerspective * viewMatrix);
   root->Update(msec);
+
+  if (rotateLight) {
+    Vector3 currentPos = lights[0]->GetPosition();
+    lights[0]->SetPosition(Vector3(currentPos.x, currentPos.y, currentPos.z + (msec / 20)));
+  }
 }
 
 void Renderer::RenderScene() {
@@ -80,10 +86,15 @@ void Renderer::RenderScene() {
   viewMatrix.ToIdentity();
   UpdateShaderMatrices();
 
-  glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
-  DrawBloom(combinedColourTex);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  PresentScene(bloomColourTex);
+  if (bloom) {
+    glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
+    DrawBloom(combinedColourTex);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    PresentScene(bloomColourTex);
+  } else {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    PresentScene(combinedColourTex);
+  }
 
 
   glUseProgram(0);

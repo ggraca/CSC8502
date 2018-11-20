@@ -176,7 +176,6 @@ void Mesh::Draw() {
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, bumpTexture);
 
-
   glBindVertexArray(arrayObject);
   if (bufferObject[INDEX_BUFFER])
     glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);

@@ -11,7 +11,7 @@ out vec4 gl_FragColor;
 void main(void) {
 	vec4 colour = texture(diffuseTex, IN.texCoord);
 
-	float brightness = dot(colour.rgb, vec3(0.5, 0.5, 0.5));
+	float brightness = dot(colour.rgb, vec3(0.55, 0.55, 0.55));
   if(brightness > 1.0)
       gl_FragColor = vec4(colour.rgb, 1.0);
   else

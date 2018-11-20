@@ -74,7 +74,7 @@
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="PreProcessing.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="SceneA.cpp" />
+    <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="ShaderSetup.cpp" />
     <ClCompile Include="Utils.cpp" />

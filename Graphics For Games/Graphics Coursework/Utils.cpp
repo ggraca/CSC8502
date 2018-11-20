@@ -40,19 +40,32 @@ void Renderer::GenerateShadowTexture(GLuint &into) {
 }
 
 void Renderer::DefinePerspectives() {
-  cameraPerspective = Matrix4::Perspective(
-    1.0f, 1500.0f, (float)width / (float)height, 45.0f
-  );
   lightPerspective = Matrix4::Perspective(
-    1.0f, 1500.0f, (float)width / (float)height, 90.0f
+    1.0f, 10000.0f, (float)width / (float)height, 90.0f
+  );
+  sunPerspective = Matrix4::Perspective(
+    1.0f, 10000.0f, (float)width / (float)height, 45.0f
   );
   orthPerspective = Matrix4::Orthographic(-1, 1, 1, -1, -1, 1);
+  cameraPerspective = Matrix4::Perspective(
+    1.0f, 10000.0f, (float)width / (float)height, 45.0f
+  );
 }
 
 void Renderer::KeyboardShortcuts() {
   if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_TAB)) {
     selectedCamera++;
-    if (selectedCamera > lights.size()) selectedCamera = 0;
-    camera->SetPosition(lights[selectedCamera]->GetPosition());
+    if (selectedCamera >= activeLights.size()) selectedCamera = 0;
+    camera->SetPosition(lights[activeLights[selectedCamera]]->GetPosition());
+  }
+
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) {
+    SelectSceneA();
+  }
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_2)) {
+    SelectSceneB();
+  }
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_3)) {
+    ;
   }
 }

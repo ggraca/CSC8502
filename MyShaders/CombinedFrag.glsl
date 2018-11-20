@@ -1,5 +1,7 @@
 #version 150 core
 
+uniform float deltaTime;
+
 uniform sampler2D diffuseTex;
 uniform sampler2D depthTex;
 uniform sampler2D emissiveTex;
@@ -17,7 +19,7 @@ void main(void) {
   if (texture(diffuseTex, IN.texCoord).r == 1 &&
       texture(diffuseTex, IN.texCoord).g == 1 &&
       texture(diffuseTex, IN.texCoord).b == 1) {
-    fragColour = vec4(1, 1, 1, 1);
+    fragColour = vec4(cos(deltaTime * 0.001) / 4 + 0.75, cos(deltaTime * 0.002) / 4 + 0.75, cos(deltaTime * 0.003) / 4 + 0.75, 1);
     return;
   }
 
