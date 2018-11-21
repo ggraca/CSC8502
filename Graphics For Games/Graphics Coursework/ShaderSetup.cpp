@@ -56,5 +56,11 @@ bool Renderer::SetupShaders() {
   );
   if (!blurShader->LinkProgram()) return false;
 
+  waterShader = new Shader(
+    MYSHADERDIR"WaterVert.glsl",
+    MYSHADERDIR"WaterFrag.glsl"
+  );
+  if (!waterShader->LinkProgram()) return false;
+
   return true;
 }

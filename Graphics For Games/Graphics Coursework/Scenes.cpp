@@ -23,39 +23,34 @@ bool Renderer::BuildSceneA() {
   if(!skybox[1]) return false;
 
   // HeightMap
-  Mesh* heightMap = new HeightMap(TEXTUREDIR"terrain.raw");
-  heightMap->SetTexture(
+  terrain = new HeightMap(TEXTUREDIR"terrain.raw");
+  terrain->SetTexture(
     SOIL_load_OGL_texture(MYTEXTUREDIR"sand_diffuse.jpg",
     SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS)
   );
-  heightMap->SetBumpMap(SOIL_load_OGL_texture(
+  terrain->SetBumpMap(SOIL_load_OGL_texture(
     MYTEXTUREDIR"sand_normal.jpg", SOIL_LOAD_AUTO,
     SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
   ));
 
-  if (!heightMap->GetTexture() || !heightMap->GetBumpMap()) return false;
-  SetTextureRepeating(heightMap->GetTexture(), true);
-  SetTextureRepeating(heightMap->GetBumpMap(), true);
+  if (!terrain->GetTexture() || !terrain->GetBumpMap()) return false;
+  SetTextureRepeating(terrain->GetTexture(), true);
+  SetTextureRepeating(terrain->GetBumpMap(), true);
 
-  glBindTexture(GL_TEXTURE_2D, heightMap->GetTexture());
+  glBindTexture(GL_TEXTURE_2D, terrain->GetTexture());
   glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, heightMap->GetBumpMap());
+  glBindTexture(GL_TEXTURE_2D, terrain->GetBumpMap());
   glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   s = new SceneNode();
-  s->SetColour(Vector4(1, 0.6f, 0.3f, 1.0f));
-  s->SetTransform(Matrix4::Translation(Vector3(
-    RAW_WIDTH * HEIGHTMAP_X / -2, 0, RAW_HEIGHT * HEIGHTMAP_Z / -2
-  )));
-  s->SetModelScale(Vector3(1, 1, 1));
   s->SetBoundingRadius(1000000.0f);
-  s->SetMesh(heightMap);
+  s->SetMesh(terrain);
   root->AddChild(s);
 
 
   // Water
-  Mesh* water = new HeightMap(TEXTUREDIR"terrain.raw", true);
+  water = new HeightMap(TEXTUREDIR"terrain.raw", true);
   water->SetTexture(SOIL_load_OGL_texture(
     MYTEXTUREDIR"water_diffuse.jpg", SOIL_LOAD_AUTO,
     SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
@@ -75,15 +70,10 @@ bool Renderer::BuildSceneA() {
   glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  s = new SceneNode();
-  s->SetColour(Vector4(1, 1.0f, 1.0f, 0.1f));
-  s->SetTransform(Matrix4::Translation(Vector3(
-    RAW_WIDTH * HEIGHTMAP_X / -2, 55, RAW_HEIGHT * HEIGHTMAP_Z / -2
-  )));
-  s->SetModelScale(Vector3(1, 1, 1));
-  s->SetBoundingRadius(1000000.0f);
-  s->SetMesh(water);
-  root->AddChild(s);
+  // s = new SceneNode();
+  // s->SetBoundingRadius(1000000.0f);
+  // s->SetMesh(water);
+  // root->AddChild(s);
 
   Light* l;
   sphere = new OBJMesh();
@@ -112,11 +102,8 @@ bool Renderer::BuildSceneA() {
 
   hellData->AddAnim(MESHDIR"idle2.md5anim");
   hellNode->PlayAnim(MESHDIR"idle2.md5anim");
-
-  hellNode->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
-
   hellNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
-  hellNode->SetTransform(Matrix4::Translation(Vector3(10, 55, 0)));
+  hellNode->SetTransform(Matrix4::Translation(Vector3(10, 59, 0)));
   hellNode->SetBoundingRadius(10000.0f);
   root->AddChild(hellNode);
 
@@ -206,7 +193,7 @@ void Renderer::SelectSceneB() {
   lights[0]->SetColour(Vector4(1, 0.6, 0.3, 1.0f));
   lights[0]->SetPosition(Vector3(-1000, 750, 800));
   currentSkybox = skybox[1];
-  rotateLight = true;
+  //rotateLight = true;
 
   bloom = false;
 

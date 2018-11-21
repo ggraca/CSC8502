@@ -16,10 +16,11 @@ out vec4 fragColour;
 
 void main(void) {
   if (texture(depthTex, IN.texCoord).r == 1) discard;
-  if (texture(diffuseTex, IN.texCoord).r == 1 &&
-      texture(diffuseTex, IN.texCoord).g == 1 &&
-      texture(diffuseTex, IN.texCoord).b == 1) {
-    fragColour = vec4(cos(deltaTime * 0.001) / 4 + 0.75, cos(deltaTime * 0.002) / 4 + 0.75, cos(deltaTime * 0.003) / 4 + 0.75, 1);
+  if (texture(diffuseTex, IN.texCoord).r >= 1 &&
+      texture(diffuseTex, IN.texCoord).g >= 1 &&
+      texture(diffuseTex, IN.texCoord).b >= 1) {
+    //fragColour = vec4(cos(deltaTime * 0.001) / 4 + 0.75, cos(deltaTime * 0.002) / 4 + 0.75, cos(deltaTime * 0.003) / 4 + 0.75, 1);
+    fragColour = vec4(1, 1, 1, 1);
     return;
   }
 

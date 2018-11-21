@@ -17,6 +17,8 @@ void Renderer::DrawShadowScene() {
     shadowMatrix[i] = biasMatrix * (projMatrix * viewMatrix);
     UpdateShaderMatrices();
 
+    // terrain->Draw();
+    // water->Draw();
     DrawNodes(false);
 
     i++;
@@ -38,18 +40,41 @@ void Renderer::DrawObjects() {
     glGetUniformLocation(currentShader->GetProgram(), "bumpTex"), 1
   );
 
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, objectDepthTex);
+  projMatrix = cameraPerspective;
+  viewMatrix = camera->BuildViewMatrix();
+  modelMatrix.ToIdentity();
+  UpdateShaderMatrices();
 
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, objectNormalTex);
+  // Nodes
+  // terrain->Draw();
+  DrawNodes();
+}
+
+void Renderer::DrawWater() {
+  SetCurrentShader(waterShader);
+  //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+  glUniform3fv(
+    glGetUniformLocation(currentShader->GetProgram(), "cameraPos"),
+    1, (float*)&camera->GetPosition()
+  );
+
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0
+  );
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "cubeTex"), 2
+  );
+
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkybox);
 
   projMatrix = cameraPerspective;
   viewMatrix = camera->BuildViewMatrix();
   modelMatrix.ToIdentity();
   UpdateShaderMatrices();
 
-  DrawNodes();
+  water->Draw();
 }
 
 

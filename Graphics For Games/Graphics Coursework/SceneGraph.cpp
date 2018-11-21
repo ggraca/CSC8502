@@ -58,16 +58,6 @@ void Renderer::DrawNode(SceneNode* node) {
       (float*)&transform
     );
 
-    glUniform4fv(
-      glGetUniformLocation(currentShader->GetProgram(), "nodeColour"),
-      1, (float*)&node->GetColour()
-    );
-
-    glUniform1i(
-      glGetUniformLocation(currentShader->GetProgram(), "useTexture"),
-      (int)node->GetMesh()->GetTexture()
-    );
-
     node->Draw(*this);
   }
 }

@@ -55,6 +55,7 @@ protected:
   void SelectSceneB();
 
   void DrawObjects();
+  void DrawWater();
   void DrawLights();
   void CombineBuffers();
 
@@ -86,6 +87,7 @@ protected:
   Shader* blurShader;
   Shader* bloomFilterShader;
   Shader* bloomCombineShader;
+  Shader* waterShader;
 
   GLuint shadowFBO;
   GLuint shadowTex[5];
@@ -116,6 +118,9 @@ protected:
 
   GLuint currentSkybox;
   GLuint skybox[2];
+
+  Mesh* water;
+  Mesh* terrain;
 
   bool softShadows;
   bool bloom;

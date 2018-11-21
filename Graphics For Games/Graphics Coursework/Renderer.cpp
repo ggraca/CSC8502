@@ -75,6 +75,7 @@ void Renderer::RenderScene() {
   // Render Scene
   glBindFramebuffer(GL_FRAMEBUFFER, objectFBO);
   DrawObjects();
+  DrawWater();
   glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
   DrawLights();
   glBindFramebuffer(GL_FRAMEBUFFER, combinedFBO);
