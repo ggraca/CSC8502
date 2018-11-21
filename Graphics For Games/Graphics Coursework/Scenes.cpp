@@ -24,56 +24,31 @@ bool Renderer::BuildSceneA() {
 
   // HeightMap
   terrain = new HeightMap(TEXTUREDIR"terrain.raw");
-  terrain->SetTexture(
-    SOIL_load_OGL_texture(MYTEXTUREDIR"sand_diffuse.jpg",
-    SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS)
-  );
-  terrain->SetBumpMap(SOIL_load_OGL_texture(
-    MYTEXTUREDIR"sand_normal.jpg", SOIL_LOAD_AUTO,
-    SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
-  ));
+  LoadTexture(terrain, "sand_diffuse.jpg");
+  LoadBumpMap(terrain, "sand_normal.jpg");
 
-  if (!terrain->GetTexture() || !terrain->GetBumpMap()) return false;
-  SetTextureRepeating(terrain->GetTexture(), true);
-  SetTextureRepeating(terrain->GetBumpMap(), true);
-
-  glBindTexture(GL_TEXTURE_2D, terrain->GetTexture());
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, terrain->GetBumpMap());
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  s = new SceneNode();
-  s->SetBoundingRadius(1000000.0f);
-  s->SetMesh(terrain);
-  root->AddChild(s);
-
+  string names[5] = {
+    "mountain_diffuse.jpg",
+    "mountain_diffuse.jpg",
+    "sand_diffuse.jpg",
+    "grass_diffuse.jpg",
+    "rock2_diffuse.jpg"
+  };
+  for(int i = 0; i < 5; i++) {
+    terrainTex[i] = SOIL_load_OGL_texture(
+      (string(MYTEXTUREDIR) + names[i]).c_str(), SOIL_LOAD_AUTO,
+      SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
+    );
+    SetTextureRepeating(terrainTex[i], true);
+    glBindTexture(GL_TEXTURE_2D, terrainTex[i]);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+  }
 
   // Water
   water = new HeightMap(TEXTUREDIR"terrain.raw", true);
-  water->SetTexture(SOIL_load_OGL_texture(
-    MYTEXTUREDIR"water_diffuse.jpg", SOIL_LOAD_AUTO,
-    SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
-  ));
-  water->SetBumpMap(SOIL_load_OGL_texture(
-    MYTEXTUREDIR"water_normal.jpg", SOIL_LOAD_AUTO,
-    SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
-  ));
-
-  if (!water->GetTexture() || !water->GetBumpMap()) return false;
-  SetTextureRepeating(water->GetTexture(), true);
-  SetTextureRepeating(water->GetBumpMap(), true);
-
-  glBindTexture(GL_TEXTURE_2D, water->GetTexture());
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, water->GetBumpMap());
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  // s = new SceneNode();
-  // s->SetBoundingRadius(1000000.0f);
-  // s->SetMesh(water);
-  // root->AddChild(s);
+  LoadTexture(water, "water_diffuse.jpg");
+  LoadBumpMap(water, "water_normal.jpg");
 
   Light* l;
   sphere = new OBJMesh();

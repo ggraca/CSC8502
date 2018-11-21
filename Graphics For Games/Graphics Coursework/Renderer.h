@@ -10,6 +10,7 @@
 #include "../nclgl/MD5Mesh.h"
 #include "../nclgl/MD5Node.h"
 #include "../nclgl/OBJMesh.h"
+#include <string>
 
 #define LIGHTNUM 2
 #define SHADOWSIZE 2048
@@ -54,6 +55,7 @@ protected:
   void SelectSceneA();
   void SelectSceneB();
 
+  void DrawTerrain();
   void DrawObjects();
   void DrawWater();
   void DrawLights();
@@ -72,6 +74,8 @@ protected:
   void DrawBlur(GLuint colourTex);
   void DrawBloom(GLuint colourTex);
   void PresentScene(GLuint colourTex);
+  void LoadTexture(Mesh* into, string name);
+  void LoadBumpMap(Mesh* into, string name);
 
   vector<Light*> lights;
   vector<int> activeLights;
@@ -88,6 +92,7 @@ protected:
   Shader* bloomFilterShader;
   Shader* bloomCombineShader;
   Shader* waterShader;
+  Shader* terrainShader;
 
   GLuint shadowFBO;
   GLuint shadowTex[5];
@@ -121,6 +126,7 @@ protected:
 
   Mesh* water;
   Mesh* terrain;
+  GLuint terrainTex[5];
 
   bool softShadows;
   bool bloom;

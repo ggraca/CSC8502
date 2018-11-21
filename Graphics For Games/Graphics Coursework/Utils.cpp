@@ -20,6 +20,28 @@ void Renderer::GenerateScreenTexture(GLuint &into, bool depth) {
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Renderer::LoadTexture(Mesh* into, string name) {
+  into->SetTexture(SOIL_load_OGL_texture(
+    (string(MYTEXTUREDIR) + name).c_str(), SOIL_LOAD_AUTO,
+    SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS)
+  );
+  SetTextureRepeating(into->GetTexture(), true);
+  glBindTexture(GL_TEXTURE_2D, into->GetTexture());
+  glGenerateMipmap(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::LoadBumpMap(Mesh* into, string name) {
+  into->SetBumpMap(SOIL_load_OGL_texture(
+    (string(MYTEXTUREDIR) + name).c_str(), SOIL_LOAD_AUTO,
+    SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS
+  ));
+  SetTextureRepeating(into->GetBumpMap(), true);
+  glBindTexture(GL_TEXTURE_2D, terrain->GetBumpMap());
+  glGenerateMipmap(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void Renderer::GenerateShadowTexture(GLuint &into) {
   glGenTextures(1, &into);
   glBindTexture(GL_TEXTURE_2D, into);

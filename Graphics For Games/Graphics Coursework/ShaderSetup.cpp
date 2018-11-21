@@ -62,5 +62,11 @@ bool Renderer::SetupShaders() {
   );
   if (!waterShader->LinkProgram()) return false;
 
+  terrainShader = new Shader(
+    MYSHADERDIR"TerrainVert.glsl",
+    MYSHADERDIR"TerrainFrag.glsl"
+  );
+  if (!terrainShader->LinkProgram()) return false;
+
   return true;
 }

@@ -17,8 +17,16 @@ void Renderer::DrawShadowScene() {
     shadowMatrix[i] = biasMatrix * (projMatrix * viewMatrix);
     UpdateShaderMatrices();
 
-    // terrain->Draw();
-    // water->Draw();
+    // Terrain
+    modelMatrix.ToIdentity();
+    glUniformMatrix4fv(
+      glGetUniformLocation(currentShader->GetProgram(), "modelMatrix"),
+      1, false,
+      (float*)&modelMatrix
+    );
+    terrain->Draw();
+
+    // Nodes
     DrawNodes(false);
 
     i++;
@@ -28,10 +36,39 @@ void Renderer::DrawShadowScene() {
   glViewport(0, 0, width, height);
 }
 
+void Renderer::DrawTerrain() {
+  SetCurrentShader(terrainShader);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0
+  );
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "bumpTex"), 1
+  );
+
+  int arr[5] = {20, 21, 22, 23, 24};
+  glUniform1iv(
+    glGetUniformLocation(currentShader->GetProgram(), "terrainTex"),
+    5, (int*)&arr
+  );
+
+  for(int i = 0; i < 5; i++) {
+    glActiveTexture(GL_TEXTURE0 + arr[i]);
+    glBindTexture(GL_TEXTURE_2D, terrainTex[i]);
+  }
+
+  projMatrix = cameraPerspective;
+  viewMatrix = camera->BuildViewMatrix();
+  modelMatrix.ToIdentity();
+  UpdateShaderMatrices();
+
+  terrain->Draw();
+}
 
 void Renderer::DrawObjects() {
   SetCurrentShader(sceneShader);
-  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+  //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
   glUniform1i(
     glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0
@@ -45,8 +82,6 @@ void Renderer::DrawObjects() {
   modelMatrix.ToIdentity();
   UpdateShaderMatrices();
 
-  // Nodes
-  // terrain->Draw();
   DrawNodes();
 }
 
