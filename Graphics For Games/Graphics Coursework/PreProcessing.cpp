@@ -87,6 +87,10 @@ void Renderer::DrawObjects() {
 void Renderer::DrawGrass() {
   SetCurrentShader(grassShader);
 
+  glUniform1i(
+    glGetUniformLocation(currentShader->GetProgram(), "bloom"), bloom
+  );
+
   projMatrix = cameraPerspective;
   viewMatrix = camera->BuildViewMatrix();
   modelMatrix.ToIdentity();

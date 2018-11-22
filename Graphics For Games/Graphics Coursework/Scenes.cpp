@@ -4,7 +4,7 @@ bool Renderer::BuildScenes() {
   camera = new Camera(-20, 270, Vector3(-80, 90, 0));
   SceneNode* s;
 
-  // Skybox
+  // Skyboxes
   skybox[0] = SOIL_load_OGL_cubemap(
     MYSKYBOXES"nightsky_ft.tga", MYSKYBOXES"nightsky_bk.tga",
     MYSKYBOXES"nightsky_up.tga", MYSKYBOXES"nightsky_dn.tga",
@@ -13,7 +13,6 @@ bool Renderer::BuildScenes() {
   );
   if(!skybox[0]) return false;
 
-  // Skybox
   skybox[1] = SOIL_load_OGL_cubemap(
     MYSKYBOXES"sorbin_ft.tga", MYSKYBOXES"sorbin_bk.tga",
     MYSKYBOXES"sorbin_up.tga", MYSKYBOXES"sorbin_dn.tga",
@@ -21,6 +20,14 @@ bool Renderer::BuildScenes() {
     SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0
   );
   if(!skybox[1]) return false;
+
+  skybox[2] = SOIL_load_OGL_cubemap(
+    MYSKYBOXES"midnight-silence_ft.tga", MYSKYBOXES"midnight-silence_bk.tga",
+    MYSKYBOXES"midnight-silence_up.tga", MYSKYBOXES"midnight-silence_dn.tga",
+    MYSKYBOXES"midnight-silence_rt.tga", MYSKYBOXES"midnight-silence_lf.tga",
+    SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0
+  );
+  if(!skybox[2]) return false;
 
   // HeightMap
   terrain = new HeightMap(TEXTUREDIR"terrain.raw");
@@ -64,22 +71,16 @@ bool Renderer::BuildScenes() {
     for(int z = -1; z <= 1; z += 2) {
       l = new Light();
       l->SetPosition(Vector3(x * 20, 90, z * 20));
-      l->SetColour(Vector4(0.9f, 0.9f, 0.9f, 0.0f));
+
+      float r = 0.5f + (float)(rand() % 129) / 128.0f;
+      float g = 0.5f + (float)(rand() % 129) / 128.0f;
+      float b = 0.5f + (float)(rand() % 129) / 128.0f;
+
+      l->SetColour(Vector4(r, g, b, 1.0f));
       l->SetRadius(50);
       lights.push_back(l);
     }
   }
-
-  // Hellknight
-  MD5FileData* hellData = new MD5FileData(MESHDIR"hellknight.md5mesh");
-  MD5Node* hellNode = new MD5Node(*hellData);
-
-  hellData->AddAnim(MESHDIR"idle2.md5anim");
-  hellNode->PlayAnim(MESHDIR"idle2.md5anim");
-  hellNode->SetModelScale(Vector3(0.1, 0.1, 0.1));
-  hellNode->SetTransform(Matrix4::Translation(Vector3(10, 59, 0)));
-  hellNode->SetBoundingRadius(10000.0f);
-  root->AddChild(hellNode);
 
   // Beams
   Mesh* m = Mesh::GenerateQuad();
@@ -89,12 +90,13 @@ bool Renderer::BuildScenes() {
   );
   SetTextureRepeating(m->GetTexture(), true);
 
+  int i = 0;
   for(int x = -1; x <= 1; x += 2) {
     for(int z = -1; z <= 1; z += 2) {
       int height = 400;
-      SceneNode* col = new SceneNode();
-      col->SetTransform(Matrix4::Translation(Vector3(x * 20, height - 20, z * 20)));
-      root->AddChild(col);
+      beams[i] = new SceneNode();
+      beams[i]->SetTransform(Matrix4::Translation(Vector3(x * 20, height - 20, z * 20)));
+      root->AddChild(beams[i]);
 
       s = new SceneNode();
       s->SetColour(Vector4(1, 1, 1, 0));
@@ -103,7 +105,7 @@ bool Renderer::BuildScenes() {
       s->SetRotation(Vector3(1, 0, 1));
       s->SetModelScale(Vector3(1.1, height, 1.1));
       s->SetBoundingRadius(10000.0f);
-      col->AddChild(s);
+      beams[i]->AddChild(s);
 
       s = new SceneNode();
       s->SetColour(Vector4(1, 1, 1, 0));
@@ -112,7 +114,7 @@ bool Renderer::BuildScenes() {
       s->SetRotation(Vector3(1, 90, 1));
       s->SetModelScale(Vector3(1.1, height, 1.1));
       s->SetBoundingRadius(10000.0f);
-      col->AddChild(s);
+      beams[i]->AddChild(s);
 
       s = new SceneNode();
       s->SetColour(Vector4(1, 1, 1, 0));
@@ -121,7 +123,7 @@ bool Renderer::BuildScenes() {
       s->SetRotation(Vector3(1, 180, 1));
       s->SetModelScale(Vector3(1.1, height, 1.1));
       s->SetBoundingRadius(10000.0f);
-      col->AddChild(s);
+      beams[i]->AddChild(s);
 
       s = new SceneNode();
       s->SetColour(Vector4(1, 1, 1, 0));
@@ -130,16 +132,30 @@ bool Renderer::BuildScenes() {
       s->SetRotation(Vector3(1, 270, 1));
       s->SetModelScale(Vector3(1.1, height, 1.1));
       s->SetBoundingRadius(10000.0f);
-      col->AddChild(s);
+      beams[i]->AddChild(s);
+
+      i++;
     }
   }
 
-  SelectSceneA();
+  // Hellknight
+  MD5FileData* hellData = new MD5FileData(MESHDIR"hellknight.md5mesh");
+  hellknight = new MD5Node(*hellData);
+
+  hellData->AddAnim(MESHDIR"idle2.md5anim");
+  hellknight->PlayAnim(MESHDIR"idle2.md5anim");
+  hellknight->SetModelScale(Vector3(0.1, 0.1, 0.1));
+  hellknight->SetTransform(Matrix4::Translation(Vector3(10, 59, 0)));
+  hellknight->SetBoundingRadius(10000.0f);
+  root->AddChild(hellknight);
+
+  SelectSceneB();
 
   return true;
 }
 
 void Renderer::SelectSceneA() {
+  currentScene = 0;
   activeLights.clear();
   activeLights.push_back(0);
   activeLights.push_back(1);
@@ -151,14 +167,20 @@ void Renderer::SelectSceneA() {
   lights[0]->SetColour(Vector4(0.4, 0.6, 1, 1.0f));
   lights[0]->SetPosition(Vector3(1000, 750, 800));
   currentSkybox = skybox[0];
-  rotateLight = false;
 
   bloom = true;
+  grass = false;
 
   camera->SetPosition(Vector3(-80, 90, 0));
+  camera->SetYaw(270);
+  camera->SetPitch(-20);
+
+  for(int i = 0; i < 4; i++) beams[i]->SetActive(true);
+  hellknight->SetActive(true);
 }
 
 void Renderer::SelectSceneB() {
+  currentScene = 1;
   activeLights.clear();
   activeLights.push_back(0);
   softShadows = false;
@@ -166,9 +188,35 @@ void Renderer::SelectSceneB() {
   lights[0]->SetColour(Vector4(1, 0.6, 0.3, 1.0f));
   lights[0]->SetPosition(Vector3(-1000, 750, -800));
   currentSkybox = skybox[1];
-  //rotateLight = true;
 
   bloom = false;
+  grass = true;
 
-  camera->SetPosition(Vector3(-50, 90, -280));
+  camera->SetPosition(Vector3(-100, 70, -280));
+  camera->SetYaw(170);
+  camera->SetPitch(0);
+
+  for(int i = 0; i < 4; i++) beams[i]->SetActive(false);
+  hellknight->SetActive(false);
+}
+
+void Renderer::SelectSceneC() {
+  currentScene = 2;
+  activeLights.clear();
+  activeLights.push_back(0);
+  softShadows = false;
+
+  lights[0]->SetColour(Vector4(0.1, 0.2, 0.4, 1.0f));
+  lights[0]->SetPosition(Vector3(-1000, 750, -800));
+  currentSkybox = skybox[2];
+
+  bloom = true;
+  grass = true;
+
+  camera->SetPosition(Vector3(-120, 80, 30));
+  camera->SetYaw(295);
+  camera->SetPitch(10);
+
+  for(int i = 0; i < 4; i++) beams[i]->SetActive(false);
+  hellknight->SetActive(false);
 }

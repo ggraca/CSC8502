@@ -1,5 +1,6 @@
 #include "../../nclgl/window.h"
 #include "Renderer.h"
+#include <time.h>
 
 #pragma comment(lib, "nclgl.lib")
 
@@ -8,6 +9,8 @@ int main() {
   if (!w.HasInitialised()) {
     return -1;
   }
+
+  srand(time(NULL));
 
   Renderer renderer(w);
   if (!renderer.HasInitialised()) {

@@ -15,8 +15,9 @@ void Renderer::BuildNodeLists(SceneNode* from) {
   }
 
   for(auto i = from->GetChildIteratorStart();
-      i != from->GetChildIteratorEnd(); i++)
-    BuildNodeLists(*i);
+      i != from->GetChildIteratorEnd(); i++) {
+    if ((*i)->GetActive()) BuildNodeLists(*i);
+  }
 }
 
 void Renderer::SortNodeLists() {

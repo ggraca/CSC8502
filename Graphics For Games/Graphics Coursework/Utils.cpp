@@ -81,13 +81,27 @@ void Renderer::KeyboardShortcuts() {
     camera->SetPosition(lights[activeLights[selectedCamera]]->GetPosition());
   }
 
-  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) {
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1))
     SelectSceneA();
-  }
-  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_2)) {
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_2))
     SelectSceneB();
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_3))
+    SelectSceneC();
+
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RIGHT)) {
+    currentScene++;
+    if (currentScene > 2) currentScene = 0;
+
+    if (currentScene == 0) SelectSceneA();
+    if (currentScene == 1) SelectSceneB();
+    if (currentScene == 2) SelectSceneC();
   }
-  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_3)) {
-    ;
+  if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_LEFT)) {
+    currentScene--;
+    if (currentScene < 0) currentScene = 2;
+
+    if (currentScene == 0) SelectSceneA();
+    if (currentScene == 1) SelectSceneB();
+    if (currentScene == 2) SelectSceneC();
   }
 }

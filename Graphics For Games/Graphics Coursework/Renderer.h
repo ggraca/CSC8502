@@ -126,7 +126,7 @@ protected:
   Matrix4 sunPerspective;
 
   GLuint currentSkybox;
-  GLuint skybox[2];
+  GLuint skybox[3];
 
   OBJMesh* sphere;
   Mesh* quad;
@@ -136,5 +136,9 @@ protected:
 
   bool softShadows;
   bool bloom;
-  bool rotateLight;
+  bool grass;
+
+  int currentScene;
+  SceneNode* beams[4];
+  MD5Node* hellknight;
 };

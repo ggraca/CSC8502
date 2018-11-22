@@ -7,7 +7,12 @@ uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 uniform float deltaTime;
 
+uniform int bloom;
+
 void main() {
+  int scale = 2;
+  if (bloom == 1) scale = 5;
+
   mat4 mvp = projMatrix * viewMatrix * modelMatrix;
 
   vec3 P0 = gl_in[0].gl_Position.xyz;
@@ -32,10 +37,10 @@ void main() {
 
   float tval = deltaTime / 1000;
   vec3 NP = P;
-  NP.x += sin(tval) / 3 + cos(tval / 2) / 3;
-  NP.z += cos(tval) / 3 + sin(tval / 2) / 3;
+  NP.x += (sin(tval) / 3 + cos(tval / 2) / 3) * scale;
+  NP.z += (cos(tval) / 3 + sin(tval / 2) / 3) * scale;
 
-  gl_Position = mvp * vec4(NP + N, 1.0);
+  gl_Position = mvp * vec4(NP + N * scale, 1.0);
   EmitVertex();
 
   EndPrimitive();

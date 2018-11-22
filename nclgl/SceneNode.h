@@ -49,6 +49,9 @@ public:
 		return a->GetCameraDistance() < b->GetCameraDistance();
 	}
 
+	bool GetActive() const { return active; }
+	void SetActive(bool a) { active = a; }
+
 protected:
 	SceneNode* parent;
 	vector<SceneNode*> children;
@@ -62,4 +65,6 @@ protected:
 
 	float distanceFromCamera;
 	float boundingRadius;
+
+	bool active;
 };

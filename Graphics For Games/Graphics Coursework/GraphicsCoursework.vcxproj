@@ -69,14 +69,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FBOSetup.cpp" />
+    <ClCompile Include="SetupFBOs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="PreProcessing.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
-    <ClCompile Include="ShaderSetup.cpp" />
+    <ClCompile Include="SetupShaders.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>

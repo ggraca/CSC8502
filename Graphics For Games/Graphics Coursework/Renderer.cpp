@@ -29,7 +29,7 @@ Renderer::~Renderer(void) {
   delete water;
   delete terrain;
 
-  for (auto l : lights) delete l;
+  for(auto l : lights) delete l;
 
   delete basicShader;
   delete sceneShader;
@@ -75,11 +75,6 @@ void Renderer::UpdateScene(float msec) {
   camera->UpdateCamera(msec);
   frameFrustum.FromMatrix(cameraPerspective * viewMatrix);
   root->Update(msec);
-
-  if (rotateLight) {
-    Vector3 currentPos = lights[0]->GetPosition();
-    lights[0]->SetPosition(Vector3(currentPos.x, currentPos.y, currentPos.z + (msec / 20)));
-  }
 }
 
 void Renderer::RenderScene() {
@@ -97,7 +92,7 @@ void Renderer::RenderScene() {
   glBindFramebuffer(GL_FRAMEBUFFER, objectFBO);
   DrawTerrain();
   DrawObjects();
-  DrawGrass();
+  if (grass) DrawGrass();
   DrawWater();
   glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
   DrawLights();
@@ -110,18 +105,18 @@ void Renderer::RenderScene() {
   viewMatrix.ToIdentity();
   UpdateShaderMatrices();
 
+  glBindFramebuffer(GL_FRAMEBUFFER, underwaterFBO);
+  DrawUnderwater(combinedColourTex);
+
   if (bloom) {
     glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
-    DrawBloom(combinedColourTex);
+    DrawBloom(underwaterColourTex);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     PresentScene(bloomColourTex);
   } else {
-    glBindFramebuffer(GL_FRAMEBUFFER, underwaterFBO);
-    DrawUnderwater(combinedColourTex);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     PresentScene(underwaterColourTex);
   }
-
 
   glUseProgram(0);
   SwapBuffers();
