@@ -28,6 +28,7 @@ Mesh::~Mesh(void) {
   glDeleteBuffers(MAX_BUFFER, bufferObject);
   glDeleteTextures(1, &texture);
   glDeleteTextures(1, &bumpTexture);
+
   delete[] vertices;
   delete[] colours;
   delete[] textureCoords;

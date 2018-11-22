@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-bool Renderer::BuildSceneA() {
+bool Renderer::BuildScenes() {
   camera = new Camera(-20, 270, Vector3(-80, 90, 0));
   SceneNode* s;
 
@@ -131,7 +131,6 @@ bool Renderer::BuildSceneA() {
       s->SetModelScale(Vector3(1.1, height, 1.1));
       s->SetBoundingRadius(10000.0f);
       col->AddChild(s);
-
     }
   }
 

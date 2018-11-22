@@ -68,7 +68,6 @@ void Renderer::DrawTerrain() {
 
 void Renderer::DrawObjects() {
   SetCurrentShader(sceneShader);
-  //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
   glUniform1i(
     glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0
@@ -98,7 +97,6 @@ void Renderer::DrawGrass() {
 
 void Renderer::DrawWater() {
   SetCurrentShader(waterShader);
-  //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
   glUniform3fv(
     glGetUniformLocation(currentShader->GetProgram(), "cameraPos"),
@@ -222,7 +220,7 @@ void Renderer::DrawSkybox() {
 }
 
 
-void Renderer::CombineBuffers() {
+void Renderer::DrawCombinedScene() {
   SetCurrentShader(combineShader);
 
   glUniform1i(

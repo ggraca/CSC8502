@@ -6,7 +6,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent) {
 
   if (!SetupShaders()) return;
   if (!SetupFBOs()) return;
-  if (!BuildSceneA()) return;
+  if (!BuildScenes()) return;
 
   DefinePerspectives();
 
@@ -26,15 +26,33 @@ Renderer::~Renderer(void) {
 
   delete quad;
   delete sphere;
+  delete water;
+  delete terrain;
 
   for (auto l : lights) delete l;
 
-  delete shadowShader;
+  delete basicShader;
   delete sceneShader;
+  delete shadowShader;
   delete combineShader;
   delete lightShader;
   delete skyboxShader;
+  delete blurShader;
+  delete bloomFilterShader;
+  delete bloomCombineShader;
+  delete waterShader;
+  delete terrainShader;
+  delete underwaterShader;
+  delete grassShader;
   currentShader = NULL;
+
+  glDeleteFramebuffers(1, &shadowFBO);
+  glDeleteFramebuffers(1, &objectFBO);
+  glDeleteFramebuffers(1, &lightFBO);
+  glDeleteFramebuffers(1, &combinedFBO);
+  glDeleteFramebuffers(1, &blurFBO);
+  glDeleteFramebuffers(1, &bloomFBO);
+  glDeleteFramebuffers(1, &underwaterFBO);
 
   for(int i = 0; i < MAX_SHADOWS; i++)
     glDeleteTextures(1, &shadowTex[i]);
@@ -43,10 +61,13 @@ Renderer::~Renderer(void) {
   glDeleteTextures(1, &objectDepthTex);
   glDeleteTextures(1, &lightEmissiveTex);
   glDeleteTextures(1, &lightSpecularTex);
-
-  glDeleteFramebuffers(1, &shadowFBO);
-  glDeleteFramebuffers(1, &objectFBO);
-  glDeleteFramebuffers(1, &lightFBO);
+  glDeleteTextures(1, &combinedColourTex);
+  for(int i = 0; i < 2; i++)
+    glDeleteTextures(1, &blurColourTex[i]);
+  glDeleteTextures(1, &bloomColourTex);
+  glDeleteTextures(1, &underwaterColourTex);
+  for(int i = 0; i < 5; i++)
+    glDeleteTextures(1, &terrainTex[i]);
 }
 
 void Renderer::UpdateScene(float msec) {
@@ -82,7 +103,7 @@ void Renderer::RenderScene() {
   DrawLights();
   glBindFramebuffer(GL_FRAMEBUFFER, combinedFBO);
   DrawSkybox();
-  CombineBuffers();
+  DrawCombinedScene();
 
   // Post Processing
   projMatrix = orthPerspective;

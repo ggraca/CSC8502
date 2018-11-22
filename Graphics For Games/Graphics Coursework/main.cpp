@@ -4,7 +4,7 @@
 #pragma comment(lib, "nclgl.lib")
 
 int main() {
-  Window w("Next UE4!", 1920, 2000, true);
+  Window w("Next UE4!", 800, 600, false);
   if (!w.HasInitialised()) {
     return -1;
   }

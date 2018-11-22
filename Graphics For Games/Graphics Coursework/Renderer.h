@@ -26,20 +26,12 @@ public:
   virtual void RenderScene();
 
 protected:
-  Camera* camera;
-  int selectedCamera = 0;
-
   // SceneGraph
   void BuildNodeLists(SceneNode* from);
   void SortNodeLists();
   void ClearNodeLists();
   void DrawNodes(bool transparents = true);
   void DrawNode(SceneNode* node);
-
-  SceneNode* root;
-  Frustum frameFrustum;
-  vector<SceneNode*> transparentNodeList;
-  vector<SceneNode*> nodeList;
 
   // Setup
   bool SetupShaders();
@@ -51,39 +43,43 @@ protected:
   bool SetupBlurFBO();
   bool SetupBloomFBO();
   bool SetupUnderwaterFBO();
+  bool BuildScenes();
 
-  bool BuildSceneA();
-  void SelectSceneA();
-  void SelectSceneB();
-
+  // Loop
+  void DrawShadowScene();
   void DrawTerrain();
   void DrawObjects();
   void DrawGrass();
   void DrawWater();
   void DrawLights();
-  void CombineBuffers();
-
-  // Loop
-  void DrawShadowScene();
-  void DrawCombinedScene();
-  void KeyboardShortcuts();
-
-  // Utils
-  void GenerateScreenTexture(GLuint &into, bool depth = false);
-  void GenerateShadowTexture(GLuint &into);
-  void DefinePerspectives();
   void DrawSkybox();
+  void DrawCombinedScene();
   void DrawBlur(GLuint colourTex);
   void DrawBloom(GLuint colourTex);
   void DrawUnderwater(GLuint colourTex);
   void PresentScene(GLuint colourTex);
+  void KeyboardShortcuts();
+
+  // Utils
   void LoadTexture(Mesh* into, string name);
   void LoadBumpMap(Mesh* into, string name);
+  void GenerateScreenTexture(GLuint &into, bool depth = false);
+  void GenerateShadowTexture(GLuint &into);
+  void DefinePerspectives();
+  void SelectSceneA();
+  void SelectSceneB();
+  void SelectSceneC();
+
+  Camera* camera;
+  int selectedCamera = 0;
+
+  SceneNode* root;
+  Frustum frameFrustum;
+  vector<SceneNode*> transparentNodeList;
+  vector<SceneNode*> nodeList;
 
   vector<Light*> lights;
   vector<int> activeLights;
-  OBJMesh* sphere;
-  Mesh* quad;
 
   Shader* basicShader;
   Shader* sceneShader;
@@ -132,6 +128,8 @@ protected:
   GLuint currentSkybox;
   GLuint skybox[2];
 
+  OBJMesh* sphere;
+  Mesh* quad;
   Mesh* water;
   Mesh* terrain;
   GLuint terrainTex[5];
