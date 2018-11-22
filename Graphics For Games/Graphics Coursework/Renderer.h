@@ -58,6 +58,7 @@ protected:
 
   void DrawTerrain();
   void DrawObjects();
+  void DrawGrass();
   void DrawWater();
   void DrawLights();
   void CombineBuffers();
@@ -96,6 +97,7 @@ protected:
   Shader* waterShader;
   Shader* terrainShader;
   Shader* underwaterShader;
+  Shader* grassShader;
 
   GLuint shadowFBO;
   GLuint shadowTex[5];

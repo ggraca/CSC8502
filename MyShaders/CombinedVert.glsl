@@ -15,11 +15,4 @@ out Vertex {
 void main(void) {
     gl_Position = projMatrix * vec4(position, 1.0);
     OUT.texCoord = texCoord;
-
-    // vec3 temp = position;
-    // temp.y = -temp.y;
-
-    // OUT.normal =
-      //transpose(mat3(viewMatrix)) *
-      //normalize(temp + vec3(0, 0, 1));
 }

@@ -56,8 +56,7 @@ bool Renderer::BuildSceneA() {
 
   // Moon
   l = new Light();
-  l->SetPosition(Vector3(1000, 800, 800));
-  l->SetRadius(5000);
+  l->SetRadius(4000);
   lights.push_back(l);
 
   // Beams
@@ -166,7 +165,7 @@ void Renderer::SelectSceneB() {
   softShadows = false;
 
   lights[0]->SetColour(Vector4(1, 0.6, 0.3, 1.0f));
-  lights[0]->SetPosition(Vector3(-1000, 750, 800));
+  lights[0]->SetPosition(Vector3(-1000, 750, -800));
   currentSkybox = skybox[1];
   //rotateLight = true;
 

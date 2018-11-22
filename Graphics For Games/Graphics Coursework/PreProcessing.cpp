@@ -85,6 +85,17 @@ void Renderer::DrawObjects() {
   DrawNodes();
 }
 
+void Renderer::DrawGrass() {
+  SetCurrentShader(grassShader);
+
+  projMatrix = cameraPerspective;
+  viewMatrix = camera->BuildViewMatrix();
+  modelMatrix.ToIdentity();
+  UpdateShaderMatrices();
+
+  terrain->Draw();
+}
+
 void Renderer::DrawWater() {
   SetCurrentShader(waterShader);
   //glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

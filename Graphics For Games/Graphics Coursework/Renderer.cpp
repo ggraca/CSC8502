@@ -76,6 +76,7 @@ void Renderer::RenderScene() {
   glBindFramebuffer(GL_FRAMEBUFFER, objectFBO);
   DrawTerrain();
   DrawObjects();
+  DrawGrass();
   DrawWater();
   glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
   DrawLights();

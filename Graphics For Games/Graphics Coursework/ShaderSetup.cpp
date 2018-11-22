@@ -74,5 +74,12 @@ bool Renderer::SetupShaders() {
   );
   if (!underwaterShader->LinkProgram()) return false;
 
+  grassShader = new Shader(
+    MYSHADERDIR"GrassVert.glsl",
+    MYSHADERDIR"GrassFrag.glsl",
+    MYSHADERDIR"GrassGeom.glsl"
+  );
+  if (!grassShader->LinkProgram()) return false;
+
   return true;
 }
