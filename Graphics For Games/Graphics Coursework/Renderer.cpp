@@ -94,8 +94,10 @@ void Renderer::RenderScene() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     PresentScene(bloomColourTex);
   } else {
+    glBindFramebuffer(GL_FRAMEBUFFER, underwaterFBO);
+    DrawUnderwater(combinedColourTex);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    PresentScene(combinedColourTex);
+    PresentScene(underwaterColourTex);
   }
 
 

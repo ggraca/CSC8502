@@ -53,6 +53,23 @@ void Renderer::DrawBloom(GLuint colourTex) {
   quad->Draw();
 }
 
+void Renderer::DrawUnderwater(GLuint colourTex) {
+  SetCurrentShader(underwaterShader);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+  glUniform2f(glGetUniformLocation(
+    currentShader->GetProgram(), "pixelSize"), 1.0f / width, 1.0f / height
+  );
+
+  glUniform1f(
+    glGetUniformLocation(currentShader->GetProgram(), "cameraHeight"),
+    camera->GetPosition().y
+  );
+
+  quad->SetTexture(colourTex);
+  quad->Draw();
+}
+
 void Renderer::PresentScene(GLuint colourTex) {
   SetCurrentShader(basicShader);
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

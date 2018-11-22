@@ -7,6 +7,7 @@ bool Renderer::SetupFBOs() {
   glGenFramebuffers(1, &combinedFBO);
   glGenFramebuffers(1, &blurFBO);
   glGenFramebuffers(1, &bloomFBO);
+  glGenFramebuffers(1, &underwaterFBO);
 
   // Shadows
   if (!SetupShadowFBO()) return false;
@@ -17,6 +18,8 @@ bool Renderer::SetupFBOs() {
   if (!SetupCombinedFBO()) return false;
   if (!SetupBlurFBO()) return false;
   if (!SetupBloomFBO()) return false;
+  if (!SetupUnderwaterFBO()) return false;
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   return true;
 }
@@ -26,9 +29,6 @@ bool Renderer::SetupShadowFBO() {
   // Textures
   for(int i = 0; i < MAX_SHADOWS; i++)
     GenerateShadowTexture(shadowTex[i]);
-
-  // for(int i = 0; i < MAX_SHADOWS; i++)
-  //   cout << shadowTex[i] << endl;
 
   // Association
   glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
@@ -125,7 +125,6 @@ bool Renderer::SetupBlurFBO() {
   GenerateScreenTexture(blurColourTex[0]);
   GenerateScreenTexture(blurColourTex[1]);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return true;
 }
 
@@ -140,6 +139,26 @@ bool Renderer::SetupBloomFBO() {
   glBindFramebuffer(GL_FRAMEBUFFER, bloomFBO);
   glFramebufferTexture2D(
     GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bloomColourTex, 0
+  );
+
+  glDrawBuffers(1, buffers);
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    return false;
+
+  return true;
+}
+
+bool Renderer::SetupUnderwaterFBO() {
+  GLenum buffers[1];
+  buffers[0] = GL_COLOR_ATTACHMENT0;
+
+  // Textures
+  GenerateScreenTexture(underwaterColourTex);
+
+  // Association
+  glBindFramebuffer(GL_FRAMEBUFFER, underwaterFBO);
+  glFramebufferTexture2D(
+    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, underwaterColourTex, 0
   );
 
   glDrawBuffers(1, buffers);

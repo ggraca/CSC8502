@@ -50,6 +50,7 @@ protected:
   bool SetupCombinedFBO();
   bool SetupBlurFBO();
   bool SetupBloomFBO();
+  bool SetupUnderwaterFBO();
 
   bool BuildSceneA();
   void SelectSceneA();
@@ -73,6 +74,7 @@ protected:
   void DrawSkybox();
   void DrawBlur(GLuint colourTex);
   void DrawBloom(GLuint colourTex);
+  void DrawUnderwater(GLuint colourTex);
   void PresentScene(GLuint colourTex);
   void LoadTexture(Mesh* into, string name);
   void LoadBumpMap(Mesh* into, string name);
@@ -93,6 +95,7 @@ protected:
   Shader* bloomCombineShader;
   Shader* waterShader;
   Shader* terrainShader;
+  Shader* underwaterShader;
 
   GLuint shadowFBO;
   GLuint shadowTex[5];
@@ -115,6 +118,9 @@ protected:
 
   GLuint bloomFBO;
   GLuint bloomColourTex;
+
+  GLuint underwaterFBO;
+  GLuint underwaterColourTex;
 
   Matrix4 cameraPerspective;
   Matrix4 orthPerspective;

@@ -68,5 +68,11 @@ bool Renderer::SetupShaders() {
   );
   if (!terrainShader->LinkProgram()) return false;
 
+  underwaterShader = new Shader(
+    MYSHADERDIR"BasicVert.glsl",
+    MYSHADERDIR"UnderwaterFrag.glsl"
+  );
+  if (!underwaterShader->LinkProgram()) return false;
+
   return true;
 }
