@@ -30,7 +30,7 @@ bool Renderer::BuildScenes() {
   if(!skybox[2]) return false;
 
   // HeightMap
-  terrain = new HeightMap(TEXTUREDIR"terrain.raw");
+  terrain = new HeightMap(MYTEXTUREDIR"terrain.raw");
   LoadTexture(terrain, "sand_diffuse.jpg");
   LoadBumpMap(terrain, "sand_normal.jpg");
 
@@ -53,13 +53,13 @@ bool Renderer::BuildScenes() {
   }
 
   // Water
-  water = new HeightMap(TEXTUREDIR"terrain.raw", true);
+  water = new HeightMap(MYTEXTUREDIR"terrain.raw", true);
   LoadTexture(water, "water_diffuse.jpg");
   LoadBumpMap(water, "water_normal.jpg");
 
   Light* l;
   sphere = new OBJMesh();
-  if (!sphere->LoadOBJMesh(MESHDIR"ico.obj")) return false;
+  if (!sphere->LoadOBJMesh(MYMESHDIR"ico.obj")) return false;
 
   // Moon
   l = new Light();
@@ -139,11 +139,11 @@ bool Renderer::BuildScenes() {
   }
 
   // Hellknight
-  MD5FileData* hellData = new MD5FileData(MESHDIR"hellknight.md5mesh");
+  MD5FileData* hellData = new MD5FileData(MYMESHDIR"hellknight.md5mesh");
   hellknight = new MD5Node(*hellData);
 
-  hellData->AddAnim(MESHDIR"idle2.md5anim");
-  hellknight->PlayAnim(MESHDIR"idle2.md5anim");
+  hellData->AddAnim(MYMESHDIR"idle2.md5anim");
+  hellknight->PlayAnim(MYMESHDIR"idle2.md5anim");
   hellknight->SetModelScale(Vector3(0.1, 0.1, 0.1));
   hellknight->SetTransform(Matrix4::Translation(Vector3(10, 59, 0)));
   hellknight->SetBoundingRadius(10000.0f);
